@@ -8,6 +8,7 @@
 #include <unordered_map>
 #include <tuple>
 #include <omp.h>
+#include <fstream>
 
 using namespace std;
 
@@ -146,6 +147,16 @@ int main(int argc, char* argv[]) {
                   << " Nucleus type, 1- 12C, 2- 27Al, 3-Fe, 4-Pb, 5-40Ca, 6 - 48Ca\n" << "Rsrc pairProb";
         return 1;
     }
+    
+    // Create output filename from command line arguments
+    string filename = string(argv[1]) + "_" + string(argv[2]) + "_" + string(argv[3]) + ".txt";
+    ofstream outfile(filename);
+    
+    if (!outfile.is_open()) {
+        std::cerr << "Error: Could not open output file " << filename << std::endl;
+        return 1;
+    }
+    
     pairProb = std::stod(argv[3]);
     
     // Initialize arrays
@@ -491,6 +502,7 @@ int main(int argc, char* argv[]) {
     nucleons.reserve(protons.size() * centers.size() + neutrons.size() * centers.size());
     
     std::cout << "Creating nucleon probability distribution..." << std::endl;
+    outfile << "Creating nucleon probability distribution..." << std::endl;
     
     // Probability threshold
     const double accuracy = 1e-3;
@@ -499,6 +511,7 @@ int main(int argc, char* argv[]) {
     double N_pairs = N_nucleons*(N_nucleons-1) / 2;
     const double prob_threshold = std::sqrt( accuracy / N_pairs );
     cout << "Probability threshold: " << prob_threshold << endl;
+    outfile << "Probability threshold: " << prob_threshold << endl;
     
     // Parallelize nucleon creation
     std::vector<std::vector<Nucleon>> thread_nucleons(omp_get_max_threads());
@@ -548,6 +561,7 @@ int main(int argc, char* argv[]) {
     }
     
     std::cout << "Created " << nucleons.size() << " nucleon-position combinations" << std::endl;
+    outfile << "Created " << nucleons.size() << " nucleon-position combinations" << std::endl;
 
     // Thread-local storage for results
     std::vector<double> thread_P_np(omp_get_max_threads(), 0.0);
@@ -565,6 +579,7 @@ int main(int argc, char* argv[]) {
     std::vector<double> thread_nn(omp_get_max_threads() * shell_state_size, 0.0);
     
     std::cout << "Computing pair probabilities..." << std::endl;
+    outfile << "Computing pair probabilities..." << std::endl;
     
     // --- Spatial Partitioning Optimization ---
     // Group nucleons by their center index using a flattened structure for better data locality
@@ -761,6 +776,26 @@ int main(int argc, char* argv[]) {
     cout << "spacing: " << spacing << "\n";
     cout << " Rsrc = " << Rsrc << endl;
     cout << " pairProb = " << pairProb << endl;
+    
+    // Write results to file
+    outfile << "\nTotal close-proximity probabilities (small spheres):\n";
+    outfile << "  #np: " << P_np << "\n";
+    outfile << "  #pp: " << P_pp << "\n";
+    outfile << "  #nn: " << P_nn << "\n";
+    outfile << "  R(e,e'p): " << Reep << "\n";
+    
+    outfile << "rmax: " << r_max << "\n";
+    outfile << " SRC fraction = " << (P_np+P_pp+P_nn)/A << endl;
+    outfile << " pp/np = " << P_pp/P_np << "\t nn/np = " << P_nn/P_np << endl;
+    outfile << " Pp = " << Pp << " Pn " << Pn << endl;
+    outfile << "spacing: " << spacing << "\n";
+    outfile << " Rsrc = " << Rsrc << endl;
+    outfile << " pairProb = " << pairProb << endl;
+    
+    // Close the output file
+    outfile.close();
+    
+    cout << "\nResults saved to file: " << filename << endl;
     
     return 0;
 }
