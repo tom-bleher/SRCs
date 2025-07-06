@@ -304,6 +304,12 @@ PROGRAM src_main
     INTEGER(KIND=INT32), ALLOCATABLE :: nucleon_center_index(:)
     REAL(KIND=REAL64), ALLOCATABLE :: nucleon_probability(:)
     REAL(KIND=REAL64), ALLOCATABLE :: nucleon_transparency(:)
+    ! Temporary sorted arrays for reordering
+    INTEGER(KIND=INT32), ALLOCATABLE :: s_nucleon_type(:)
+    INTEGER(KIND=INT32), ALLOCATABLE :: s_nucleon_shell_index(:)
+    INTEGER(KIND=INT32), ALLOCATABLE :: s_nucleon_center_index(:)
+    REAL(KIND=REAL64), ALLOCATABLE :: s_nucleon_probability(:)
+    REAL(KIND=REAL64), ALLOCATABLE :: s_nucleon_transparency(:)
     
     REAL(KIND=REAL64), ALLOCATABLE :: centers(:,:), center_r(:), center_transparency(:)
     INTEGER(KIND=INT32) :: c_idx, p_count, n_count, total_nucleons
@@ -501,11 +507,6 @@ PROGRAM src_main
 
     ! ---- Data Reordering for Cache Locality ----
     BLOCK
-        INTEGER(KIND=INT32), ALLOCATABLE :: s_nucleon_type(:)
-        INTEGER(KIND=INT32), ALLOCATABLE :: s_nucleon_shell_index(:)
-        INTEGER(KIND=INT32), ALLOCATABLE :: s_nucleon_center_index(:)
-        REAL(KIND=REAL64), ALLOCATABLE :: s_nucleon_probability(:)
-        REAL(KIND=REAL64), ALLOCATABLE :: s_nucleon_transparency(:)
         INTEGER(KIND=INT64), ALLOCATABLE :: insert_idx(:)
         INTEGER(KIND=INT32) :: nucleon_idx, cell_idx, insert_pos
 
