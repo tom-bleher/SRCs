@@ -122,6 +122,9 @@ MODULE Procedures
             dens = 0.1081_REAL64 / (1.0_REAL64 + EXP((r - 4.543_REAL64) / 0.52_REAL64))
         CASE (7) ! Fe54
             dens = 0.1090_REAL64 / (1.0_REAL64 + EXP((r - 4.724_REAL64) / 0.52_REAL64))
+        CASE (8, 9, 10)
+            ! No density profile defined for these nuclei yet
+            dens = 0.0_REAL64
         END SELECT
     END FUNCTION GenDensity
 
@@ -277,6 +280,57 @@ MODULE Procedures
                            ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(1,0),ShellState(1,0),&
                            ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
                            ShellState(0,3),ShellState(0,3),ShellState(0,3)]
+            CASE(8) ! 9Be (Z=4, N=5)
+                A = 9.0; Z = 4; N = 5
+                IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
+                ALLOCATE(protons(4), neutrons(5))
+                protons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1)]
+                neutrons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1)]
+            CASE(9) ! 63Cu (Z=29, N=34)
+                A = 63.0; Z = 29; N = 34
+                IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
+                ALLOCATE(protons(29), neutrons(34))
+                protons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                          ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                          ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                          ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1)]
+                neutrons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                           ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                           ShellState(0,3), ShellState(0,3)]
+            CASE(10) ! 197Au (Z=79, N=118)
+                A = 197.0; Z = 79; N = 118
+                IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
+                ALLOCATE(protons(79), neutrons(118))
+                protons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                           ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                           ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
+                           ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                           ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                           ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
+                           ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                           ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                           ShellState(2,2), ShellState(2,2), ShellState(2,2)]
+                neutrons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                            ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                            ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                            ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                            ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
+                            ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                            ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                            ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
+                            ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                            ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                            ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                            ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                            ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(3,0), ShellState(3,0), ShellState(2,2), ShellState(2,2), &
+                            ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                            ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                            ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                            ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5)]
             CASE DEFAULT
                 WRITE(*,*) "Unknown nucleus type:", nuclType
                 STOP 1
@@ -309,9 +363,13 @@ PROGRAM src_main
     TYPE(Nucleon), ALLOCATABLE :: nucleons(:)
     REAL(KIND=REAL64), ALLOCATABLE :: centers(:,:), center_r(:), center_transparency(:)
     INTEGER(KIND=INT32) :: c_idx, p_count, n_count
-    REAL(KIND=REAL64) :: prob, transp, r_val, Rp, Rn
-    REAL(KIND=REAL64), PARAMETER :: prob_threshold = 1e-6
+    REAL(KIND=REAL64) :: prob, transp, r_val, Rp, Rn, prob_threshold
     INTEGER(KIND=INT32), PARAMETER :: n_r_max = 4, l_max = 8
+    
+    ! Parameters for Reep calculation, matching C++
+    REAL(KIND=REAL64), PARAMETER :: P_reep = 0.05
+    REAL(KIND=REAL64), PARAMETER :: sigmap_reep = 2.4
+    REAL(KIND=REAL64), PARAMETER :: sigman_reep = 1.0
     
     ! Performance-related variables
     INTEGER(KIND=INT64), ALLOCATABLE :: cell_offsets(:)
@@ -355,6 +413,18 @@ PROGRAM src_main
     Rsrc_squared = Rsrc * Rsrc
     
     CALL configure_nucleus(nuclType, A, Z, N, b_p, b_n)
+    
+    ! ---- Probability Threshold Calculation (matching C++) ----
+    BLOCK
+        REAL(KIND=REAL64) :: accuracy, total_volume, N_nucleons
+        REAL(KIND=REAL64) :: N_pairs
+        accuracy = 1e-3_REAL64
+        total_volume = (2.0_REAL64 * r_max)**3
+        N_nucleons = A * total_volume / (spacing**3)
+        N_pairs = N_nucleons * (N_nucleons - 1.0_REAL64) / 2.0_REAL64
+        prob_threshold = SQRT(accuracy / N_pairs)
+        WRITE(*,*) "Probability threshold: ", prob_threshold
+    END BLOCK
     
     ! ---- Grid and Center Pre-computation ----
     n_steps_1d = INT(FLOOR(2 * r_max / spacing)) + 1
@@ -670,8 +740,8 @@ CONTAINS
         END IF
 
         Reep = Reep + &
-            (Tnp_p*np_prob+(Tpp1+Tpp2)*pp_prob)*2.4 + &
-            (Tnp_n*np_prob+(Tnn1+Tnn2)*nn_prob)*1.0*0.05
+            (Tnp_p*np_prob+(Tpp1+Tpp2)*pp_prob)*sigmap_reep + &
+            (Tnp_n*np_prob+(Tnn1+Tnn2)*nn_prob)*sigman_reep*P_reep
 
     END SUBROUTINE process_pair
 
