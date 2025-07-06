@@ -545,7 +545,6 @@ PROGRAM src_main
             
             insert_idx(cell_idx) = insert_pos
         END DO
-        DEALLOCATE(insert_idx)
 
         ! Replace original arrays with sorted ones
         CALL MOVE_ALLOC(s_nucleon_type, nucleon_type)
