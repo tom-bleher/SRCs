@@ -508,7 +508,8 @@ PROGRAM src_main
     ! ---- Data Reordering for Cache Locality ----
     BLOCK
         INTEGER(KIND=INT64), ALLOCATABLE :: insert_idx(:)
-        INTEGER(KIND=INT32) :: nucleon_idx, cell_idx, insert_pos
+        INTEGER(KIND=INT32) :: nucleon_idx, cell_idx
+        INTEGER(KIND=INT64) :: insert_pos
 
         ALLOCATE(cell_offsets(c_idx + 1))
         cell_offsets = 0
@@ -530,12 +531,12 @@ PROGRAM src_main
                  s_nucleon_transparency(total_nucleons))
         
         ALLOCATE(insert_idx(c_idx))
-        insert_idx = cell_offsets(1:c_idx)
+        insert_idx = 0
 
         ! Reorder the nucleons based on their cell index
         DO nucleon_idx = 1, total_nucleons
             cell_idx = nucleon_center_index(nucleon_idx)
-            insert_pos = insert_idx(cell_idx) + 1
+            insert_pos = cell_offsets(cell_idx) + insert_idx(cell_idx) + 1
             
             s_nucleon_type(insert_pos) = nucleon_type(nucleon_idx)
             s_nucleon_shell_index(insert_pos) = nucleon_shell_index(nucleon_idx)
@@ -543,7 +544,7 @@ PROGRAM src_main
             s_nucleon_probability(insert_pos) = nucleon_probability(nucleon_idx)
             s_nucleon_transparency(insert_pos) = nucleon_transparency(nucleon_idx)
             
-            insert_idx(cell_idx) = insert_pos
+            insert_idx(cell_idx) = insert_idx(cell_idx) + 1
         END DO
 
         ! Replace original arrays with sorted ones
