@@ -182,65 +182,88 @@ MODULE Procedures
                 A = 56.0; Z = 26; N = 30
                 IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
                 ALLOCATE(protons(26), neutrons(30))
-                protons = [ShellState(0,0),ShellState(0,0),ShellState(0,1),ShellState(0,1),ShellState(0,1),&
-                          ShellState(0,1),ShellState(0,1),ShellState(0,1),ShellState(0,2),ShellState(0,2),&
-                          ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),&
-                          ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(1,0),ShellState(1,0),&
-                          ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
-                          ShellState(0,3)]
-                neutrons = [ShellState(0,0),ShellState(0,0),ShellState(0,1),ShellState(0,1),ShellState(0,1),&
-                           ShellState(0,1),ShellState(0,1),ShellState(0,1),ShellState(0,2),ShellState(0,2),&
-                           ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),&
-                           ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(1,0),ShellState(1,0),&
-                           ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
-                           ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(1,1),ShellState(1,1)]
+                protons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3) &
+                ]
+                neutrons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1), ShellState(1,1) &
+                ]
             CASE(4) ! 208Pb
                 A = 208.0; Z = 82; N = 126
                 IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
                 ALLOCATE(protons(82), neutrons(126))
-                protons = [ShellState(0,0),ShellState(0,0),ShellState(0,1),ShellState(0,1),ShellState(0,1),&
-                          ShellState(0,1),ShellState(0,1),ShellState(0,1),ShellState(0,2),ShellState(0,2),&
-                          ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(1,0),&
-                          ShellState(1,0),ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),&
-                          ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
-                          ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(1,1),ShellState(1,1),&
-                          ShellState(1,1),ShellState(1,1),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
-                          ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(1,1),ShellState(1,1),&
-                          ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),&
-                          ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),&
-                          ShellState(1,2),ShellState(1,2),ShellState(1,2),ShellState(1,2),ShellState(1,2),&
-                          ShellState(1,2),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),&
-                          ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(2,0),&
-                          ShellState(2,0),ShellState(1,2),ShellState(1,2),ShellState(1,2),ShellState(1,2),&
-                          ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),&
-                          ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),&
-                          ShellState(0,5),ShellState(0,5)]
-                neutrons = [ShellState(0,0),ShellState(0,0),ShellState(0,1),ShellState(0,1),ShellState(0,1),&
-                           ShellState(0,1),ShellState(0,1),ShellState(0,1),ShellState(0,2),ShellState(0,2),&
-                           ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(1,0),&
-                           ShellState(1,0),ShellState(0,2),ShellState(0,2),ShellState(0,2),ShellState(0,2),&
-                           ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
-                           ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(1,1),ShellState(1,1),&
-                           ShellState(1,1),ShellState(1,1),ShellState(0,3),ShellState(0,3),ShellState(0,3),&
-                           ShellState(0,3),ShellState(0,3),ShellState(0,3),ShellState(1,1),ShellState(1,1),&
-                           ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),&
-                           ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),&
-                           ShellState(1,2),ShellState(1,2),ShellState(1,2),ShellState(1,2),ShellState(1,2),&
-                           ShellState(1,2),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),&
-                           ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(0,4),ShellState(2,0),&
-                           ShellState(2,0),ShellState(1,2),ShellState(1,2),ShellState(1,2),ShellState(1,2),&
-                           ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),&
-                           ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),ShellState(0,5),&
-                           ShellState(0,5),ShellState(0,5),ShellState(1,3),ShellState(1,3),ShellState(1,3),&
-                           ShellState(1,3),ShellState(1,3),ShellState(1,3),ShellState(1,3),ShellState(1,3),&
-                           ShellState(2,1),ShellState(2,1),ShellState(2,1),ShellState(2,1),ShellState(1,3),&
-                           ShellState(1,3),ShellState(1,3),ShellState(1,3),ShellState(1,3),ShellState(1,3),&
-                           ShellState(2,1),ShellState(2,1),ShellState(0,6),ShellState(0,6),ShellState(0,6),&
-                           ShellState(0,6),ShellState(0,6),ShellState(0,6),ShellState(0,6),ShellState(0,6),&
-                           ShellState(0,6),ShellState(0,6),ShellState(0,6),ShellState(0,6),ShellState(0,6),&
-                           ShellState(0,6),ShellState(2,4),ShellState(2,4),ShellState(2,4),ShellState(2,4),&
-                           ShellState(2,4),ShellState(2,4),ShellState(2,4),ShellState(2,4),ShellState(2,4),&
-                           ShellState(2,4)]
+                protons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(0,5), ShellState(0,5), &
+                    ShellState(0,5), ShellState(0,5), ShellState(0,5), ShellState(0,5), &
+                    ShellState(0,5), ShellState(0,5), ShellState(0,5), ShellState(0,5), &
+                    ShellState(0,5), ShellState(0,5) &
+                ]
+                neutrons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                    ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), &
+                    ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
+                    ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), &
+                    ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                    ShellState(3,0), ShellState(3,0), ShellState(2,2), ShellState(2,2), &
+                    ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                    ShellState(1,5), ShellState(1,5) &
+                ]
             CASE(5) ! 40Ca
                 A = 40.0; Z = 20; N = 20
                 IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
@@ -290,47 +313,90 @@ MODULE Procedures
                 A = 63.0; Z = 29; N = 34
                 IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
                 ALLOCATE(protons(29), neutrons(34))
-                protons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
-                          ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
-                          ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
-                          ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1)]
-                neutrons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
-                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
-                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
-                           ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
-                           ShellState(0,3), ShellState(0,3)]
+                protons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1) &
+                ]
+                neutrons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                    ShellState(0,3), ShellState(0,3) &
+                ]
             CASE(10) ! 197Au (Z=79, N=118)
                 A = 197.0; Z = 79; N = 118
                 IF(ALLOCATED(protons)) DEALLOCATE(protons, neutrons)
                 ALLOCATE(protons(79), neutrons(118))
-                protons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
-                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
-                           ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
-                           ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
-                           ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
-                           ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
-                           ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
-                           ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
-                           ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
-                           ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
-                           ShellState(2,2), ShellState(2,2), ShellState(2,2)]
-                neutrons = [ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
-                            ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
-                            ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
-                            ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
-                            ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
-                            ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
-                            ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
-                            ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
-                            ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
-                            ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
-                            ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
-                            ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
-                            ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(3,0), ShellState(3,0), ShellState(2,2), ShellState(2,2), &
-                            ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
-                            ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
-                            ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                            ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5)]
+                protons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                    ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), &
+                    ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
+                    ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,2), ShellState(2,2), ShellState(2,2) &
+                ]
+                neutrons = [ &
+                    ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,1), ShellState(0,1), ShellState(0,1), ShellState(0,1), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,2), ShellState(0,2), ShellState(1,0), ShellState(1,0), &
+                    ShellState(0,2), ShellState(0,2), ShellState(0,2), ShellState(0,2), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(0,3), ShellState(0,3), ShellState(0,3), ShellState(0,3), &
+                    ShellState(1,1), ShellState(1,1), ShellState(1,1), ShellState(1,1), &
+                    ShellState(0,3), ShellState(0,3), ShellState(1,1), ShellState(1,1), &
+                    ShellState(2,0), ShellState(2,0), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(1,2), ShellState(1,2), ShellState(1,2), ShellState(1,2), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(0,4), ShellState(0,4), ShellState(0,4), ShellState(0,4), &
+                    ShellState(1,3), ShellState(1,3), ShellState(1,3), ShellState(1,3), &
+                    ShellState(1,3), ShellState(1,3), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
+                    ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), &
+                    ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                    ShellState(3,0), ShellState(3,0), ShellState(2,2), ShellState(2,2), &
+                    ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
+                    ShellState(1,5), ShellState(1,5) &
+                ]
             CASE DEFAULT
                 WRITE(*,*) "Unknown nucleus type:", nuclType
                 STOP 1
