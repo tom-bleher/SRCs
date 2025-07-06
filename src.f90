@@ -259,10 +259,13 @@ MODULE Procedures
                     ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
                     ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
                     ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
-                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                    ShellState(1,5), ShellState(1,5) &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), &
+                    ShellState(2,4), ShellState(2,4), ShellState(2,4), ShellState(2,4), &
+                    ShellState(2,4), ShellState(2,4), ShellState(2,4), ShellState(2,4), &
+                    ShellState(2,4), ShellState(2,4) &
                 ]
             CASE(5) ! 40Ca
                 A = 40.0; Z = 20; N = 20
@@ -392,10 +395,10 @@ MODULE Procedures
                     ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
                     ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
                     ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
-                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                    ShellState(1,5), ShellState(1,5), ShellState(1,5), ShellState(1,5), &
-                    ShellState(1,5), ShellState(1,5) &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6) &
                 ]
             CASE DEFAULT
                 WRITE(*,*) "Unknown nucleus type:", nuclType
