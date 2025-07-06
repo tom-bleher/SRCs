@@ -318,13 +318,13 @@ PROGRAM src_main
     INTEGER(KIND=INT32), ALLOCATABLE :: flat_nucleons_in_cell(:)
     
     ! Variables for main computation loop
-    REAL(KIND=REAL64), ALLOCATABLE :: thread_np(:,:), thread_pp(:,:), thread_nn(:,:)
-    REAL(KIND=REAL64), ALLOCATABLE :: thread_P_np(:), thread_P_pp(:), thread_P_nn(:), thread_Reep(:)
+    REAL(KIND=REAL64), ALLOCATABLE :: thread_np(:,:,:,:,:), thread_pp(:,:,:,:,:), thread_nn(:,:,:,:,:)
     INTEGER(KIND=INT32) :: num_threads, search_radius_cells
     INTEGER(KIND=INT32) :: ix1, iy1, iz1, ix2, iy2, iz2
     INTEGER(KIND=INT64) :: c1_idx, c2_idx, start1, end1, start2, end2
-    INTEGER(KIND=INT64) :: loop_i, loop_j, n1_flat_idx, n2_flat_idx, flat_idx
+    INTEGER(KIND=INT64) :: loop_i, loop_j, n1_flat_idx, n2_flat_idx
     REAL(KIND=REAL64) :: dx, dy, dz, dist_squared
+    REAL(KIND=REAL64) :: P_np_tot, P_pp_tot, P_nn_tot, Reep_tot
     
     ! Timing variables
     REAL(KIND=REAL64) :: t_start, t_end
@@ -477,23 +477,28 @@ PROGRAM src_main
     WRITE(*,*) "Computing pair probabilities..."
 
     ! ---- Main Computation Loop ----
+    P_np_tot = 0.0_REAL64
+    P_pp_tot = 0.0_REAL64
+    P_nn_tot = 0.0_REAL64
+    Reep_tot = 0.0_REAL64
+
     !$OMP PARALLEL
-    num_threads = omp_get_num_threads()
+    
     !$OMP SINGLE
+        num_threads = omp_get_num_threads()
         WRITE(*,*) "Running with ", num_threads, " threads."
-        ALLOCATE(thread_np(n_r_max*l_max*n_r_max*l_max, num_threads))
-        ALLOCATE(thread_pp(n_r_max*l_max*n_r_max*l_max, num_threads))
-        ALLOCATE(thread_nn(n_r_max*l_max*n_r_max*l_max, num_threads))
-        ALLOCATE(thread_P_np(num_threads), thread_P_pp(num_threads), thread_P_nn(num_threads), thread_Reep(num_threads))
+        ALLOCATE(thread_np(n_r_max, l_max, n_r_max, l_max, num_threads))
+        ALLOCATE(thread_pp(n_r_max, l_max, n_r_max, l_max, num_threads))
+        ALLOCATE(thread_nn(n_r_max, l_max, n_r_max, l_max, num_threads))
         thread_np = 0.0; thread_pp = 0.0; thread_nn = 0.0
-        thread_P_np = 0.0; thread_P_pp = 0.0; thread_P_nn = 0.0; thread_Reep = 0.0
     !$OMP END SINGLE
     
     search_radius_cells = INT(CEILING(Rsrc / spacing))
 
     !$OMP DO SCHEDULE(DYNAMIC, 1) COLLAPSE(3) &
     !$OMP PRIVATE(ix1,iy1,iz1,ix2,iy2,iz2,tid,c1_idx,c2_idx,start1,end1,start2,end2) &
-    !$OMP PRIVATE(loop_i,loop_j,n1_flat_idx,n2_flat_idx,dx,dy,dz,dist_squared)
+    !$OMP PRIVATE(loop_i,loop_j,n1_flat_idx,n2_flat_idx,dx,dy,dz,dist_squared) &
+    !$OMP REDUCTION(+:P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
     DO i = 1, n_steps_1d
         DO j = 1, n_steps_1d
             DO k = 1, n_steps_1d
@@ -509,7 +514,8 @@ PROGRAM src_main
                 DO loop_i = start1, end1
                     DO loop_j = loop_i + 1, end1
                         CALL process_pair(flat_nucleons_in_cell(loop_i), &
-                                        flat_nucleons_in_cell(loop_j), tid)
+                                        flat_nucleons_in_cell(loop_j), tid, &
+                                        P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
                     END DO
                 END DO
 
@@ -538,7 +544,8 @@ PROGRAM src_main
                             DO n1_flat_idx = start1, end1
                                 DO n2_flat_idx = start2, end2
                                     CALL process_pair(flat_nucleons_in_cell(n1_flat_idx), &
-                                                    flat_nucleons_in_cell(n2_flat_idx), tid)
+                                                    flat_nucleons_in_cell(n2_flat_idx), tid, &
+                                                    P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
                                 END DO
                             END DO
                         END DO
@@ -550,18 +557,14 @@ PROGRAM src_main
     !$OMP END DO
     
     ! Final combine of np,pp,nn arrays
-    !$OMP DO PRIVATE(flat_idx,tid)
+    !$OMP DO
     DO i = 1, n_r_max
         DO j = 1, l_max
             DO k = 1, n_r_max
                 DO l_loop = 1, l_max
-                    DO tid = 1, num_threads
-                        flat_idx = (i-1)*(l_max*n_r_max*l_max) + (j-1)*(n_r_max*l_max) + &
-                                  (k-1)*l_max + l_loop-1
-                        np(i,j,k,l_loop) = np(i,j,k,l_loop) + thread_np(flat_idx+1, tid)
-                        pp(i,j,k,l_loop) = pp(i,j,k,l_loop) + thread_pp(flat_idx+1, tid)
-                        nn(i,j,k,l_loop) = nn(i,j,k,l_loop) + thread_nn(flat_idx+1, tid)
-                    END DO
+                    np(i,j,k,l_loop) = SUM(thread_np(i, j, k, l_loop, :))
+                    pp(i,j,k,l_loop) = SUM(thread_pp(i, j, k, l_loop, :))
+                    nn(i,j,k,l_loop) = SUM(thread_nn(i, j, k, l_loop, :))
                 END DO
             END DO
         END DO
@@ -573,37 +576,33 @@ PROGRAM src_main
     
     ! ---- Final Output ----
     BLOCK
-        REAL(KIND=REAL64) :: P_np, P_pp, P_nn, Reep, Pp_tot, Pn_tot, src_fraction
-        P_np = SUM(thread_P_np)
-        P_pp = SUM(thread_P_pp)
-        P_nn = SUM(thread_P_nn)
-        Reep = SUM(thread_Reep)
+        REAL(KIND=REAL64) :: Pp_tot_calc, Pn_tot_calc, src_fraction
         
-        Pp_tot = 0.0; Pn_tot = 0.0
+        Pp_tot_calc = 0.0; Pn_tot_calc = 0.0
         DO i = 1, SIZE(nucleons)
             IF (nucleons(i)%type == 0) THEN
-                Pp_tot = Pp_tot + nucleons(i)%probability
+                Pp_tot_calc = Pp_tot_calc + nucleons(i)%probability
             ELSE
-                Pn_tot = Pn_tot + nucleons(i)%probability
+                Pn_tot_calc = Pn_tot_calc + nucleons(i)%probability
             END IF
         END DO
         
-        src_fraction = (P_np + P_pp + P_nn) / A
+        src_fraction = (P_np_tot + P_pp_tot + P_nn_tot) / A
 
         WRITE(*,'(A)') ""
         WRITE(*,'(A)') "Total close-proximity probabilities (small spheres):"
-        WRITE(*,'(A, G0)') "  #np: ", P_np
-        WRITE(*,'(A, G0)') "  #pp: ", P_pp
-        WRITE(*,'(A, G0)') "  #nn: ", P_nn
-        WRITE(*,'(A, G0)') "  R(e,e''p): ", Reep
+        WRITE(*,'(A, G0)') "  #np: ", P_np_tot
+        WRITE(*,'(A, G0)') "  #pp: ", P_pp_tot
+        WRITE(*,'(A, G0)') "  #nn: ", P_nn_tot
+        WRITE(*,'(A, G0)') "  R(e,e''p): ", Reep_tot
         WRITE(*,'(A, G0)') "rmax: ", r_max
         WRITE(*,'(A, G0)') "SRC fraction = ", src_fraction
-        IF (P_np > 0) THEN
-            WRITE(*,'(A, G0, A, G0)') "pp/np = ", P_pp/P_np, "  nn/np = ", P_nn/P_np
+        IF (P_np_tot > 0) THEN
+            WRITE(*,'(A, G0, A, G0)') "pp/np = ", P_pp_tot/P_np_tot, "  nn/np = ", P_nn_tot/P_np_tot
         ELSE
             WRITE(*,'(A)') "pp/np and nn/np are undefined because P_np is zero."
         END IF
-        WRITE(*,'(A, G0, A, G0)') "Pp = ", Pp_tot, " Pn = ", Pn_tot
+        WRITE(*,'(A, G0, A, G0)') "Pp = ", Pp_tot_calc, " Pn = ", Pn_tot_calc
         WRITE(*,'(A, G0)') "spacing: ", spacing
         WRITE(*,'(A, G0)') "Rsrc = ", Rsrc
         WRITE(*,'(A, G0)') "pairProb = ", pairProb
@@ -611,19 +610,19 @@ PROGRAM src_main
     END BLOCK
 
 CONTAINS
-    SUBROUTINE process_pair(n1_idx, n2_idx, tid)
+    SUBROUTINE process_pair(n1_idx, n2_idx, tid, P_np, P_pp, P_nn, Reep)
         USE GlobalData
         USE PhysicalConstants
         USE Procedures
         IMPLICIT NONE
         INTEGER(KIND=INT32), INTENT(IN) :: n1_idx, n2_idx, tid
+        REAL(KIND=REAL64), INTENT(INOUT) :: P_np, P_pp, P_nn, Reep
         TYPE(Nucleon) :: n1, n2
         REAL(KIND=REAL64) :: Tnp_p, Tnp_n, Tpp1, Tpp2, Tnn1, Tnn2
         REAL(KIND=REAL64) :: np_prob, pp_prob, nn_prob, pair_prob
         INTEGER(KIND=INT32) :: p_idx, n_idx
         TYPE(ShellState) :: p_shell, n_shell, p1_shell, p2_shell, n1_shell, n2_shell
         REAL(KIND=REAL64), PARAMETER :: LimitAngular = 100.0
-        INTEGER(KIND=INT64) :: flat_idx
 
         n1 = nucleons(n1_idx)
         n2 = nucleons(n2_idx)
@@ -646,37 +645,31 @@ CONTAINS
             p_shell = protons(p_idx); n_shell = neutrons(n_idx)
             IF (ABS(p_shell%l - n_shell%l) <= LimitAngular) THEN
                 np_prob = pair_prob
-                thread_P_np(tid+1) = thread_P_np(tid+1) + np_prob
-                flat_idx = (n_shell%n_r)*(l_max*n_r_max*l_max) + &
-                          (n_shell%l)*(n_r_max*l_max) + &
-                          (p_shell%n_r)*l_max + p_shell%l
-                thread_np(flat_idx+1, tid+1) = thread_np(flat_idx+1, tid+1) + np_prob
+                P_np = P_np + np_prob
+                thread_np(n_shell%n_r+1, n_shell%l+1, p_shell%n_r+1, p_shell%l+1, tid+1) = &
+                    thread_np(n_shell%n_r+1, n_shell%l+1, p_shell%n_r+1, p_shell%l+1, tid+1) + np_prob
             END IF
         ELSE IF (n1%type == 0 .AND. n2%type == 0) THEN
             p1_shell = protons(n1%shell_index); p2_shell = protons(n2%shell_index)
             Tpp1 = n1%transparency; Tpp2 = n2%transparency
             IF (ABS(p1_shell%l - p2_shell%l) <= LimitAngular) THEN
                 pp_prob = pair_prob * pairProb
-                thread_P_pp(tid+1) = thread_P_pp(tid+1) + pp_prob
-                flat_idx = (p1_shell%n_r)*(l_max*n_r_max*l_max) + &
-                          (p1_shell%l)*(n_r_max*l_max) + &
-                          (p2_shell%n_r)*l_max + p2_shell%l
-                thread_pp(flat_idx+1, tid+1) = thread_pp(flat_idx+1, tid+1) + pp_prob
+                P_pp = P_pp + pp_prob
+                thread_pp(p1_shell%n_r+1, p1_shell%l+1, p2_shell%n_r+1, p2_shell%l+1, tid+1) = &
+                    thread_pp(p1_shell%n_r+1, p1_shell%l+1, p2_shell%n_r+1, p2_shell%l+1, tid+1) + pp_prob
             END IF
         ELSE IF (n1%type == 1 .AND. n2%type == 1) THEN
             n1_shell = neutrons(n1%shell_index); n2_shell = neutrons(n2%shell_index)
             Tnn1 = n1%transparency; Tnn2 = n2%transparency
             IF (ABS(n1_shell%l - n2_shell%l) <= LimitAngular) THEN
                 nn_prob = pair_prob * pairProb
-                thread_P_nn(tid+1) = thread_P_nn(tid+1) + nn_prob
-                flat_idx = (n1_shell%n_r)*(l_max*n_r_max*l_max) + &
-                          (n1_shell%l)*(n_r_max*l_max) + &
-                          (n2_shell%n_r)*l_max + n2_shell%l
-                thread_nn(flat_idx+1, tid+1) = thread_nn(flat_idx+1, tid+1) + nn_prob
+                P_nn = P_nn + nn_prob
+                thread_nn(n1_shell%n_r+1, n1_shell%l+1, n2_shell%n_r+1, n2_shell%l+1, tid+1) = &
+                    thread_nn(n1_shell%n_r+1, n1_shell%l+1, n2_shell%n_r+1, n2_shell%l+1, tid+1) + nn_prob
             END IF
         END IF
 
-        thread_Reep(tid+1) = thread_Reep(tid+1) + &
+        Reep = Reep + &
             (Tnp_p*np_prob+(Tpp1+Tpp2)*pp_prob)*2.4 + &
             (Tnp_n*np_prob+(Tnn1+Tnn2)*nn_prob)*1.0*0.05
 
