@@ -310,7 +310,7 @@ PROGRAM src_main
     REAL(KIND=REAL64), ALLOCATABLE :: centers(:,:), center_r(:), center_transparency(:)
     INTEGER(KIND=INT32) :: c_idx, p_count, n_count
     REAL(KIND=REAL64) :: prob, transp, r_val, Rp, Rn
-    REAL(KIND=REAL64) :: prob_threshold
+    REAL(KIND=REAL64), PARAMETER :: prob_threshold = 1e-6
     INTEGER(KIND=INT32), PARAMETER :: n_r_max = 4, l_max = 8
     
     ! Performance-related variables
@@ -355,17 +355,6 @@ PROGRAM src_main
     Rsrc_squared = Rsrc * Rsrc
     
     CALL configure_nucleus(nuclType, A, Z, N, b_p, b_n)
-    
-    ! Calculate dynamic probability threshold
-    BLOCK
-        REAL(KIND=REAL64) :: accuracy, total_volume, N_nucleons, N_pairs
-        accuracy = 1e-3_REAL64
-        total_volume = (2.0_REAL64 * r_max)**3
-        N_nucleons = A * total_volume / (spacing**3)
-        N_pairs = N_nucleons * (N_nucleons - 1.0_REAL64) / 2.0_REAL64
-        prob_threshold = sqrt(accuracy / N_pairs)
-        WRITE(*,'(A, ES12.5)') " Probability threshold: ", prob_threshold
-    END BLOCK
     
     ! ---- Grid and Center Pre-computation ----
     n_steps_1d = INT(FLOOR(2 * r_max / spacing)) + 1
