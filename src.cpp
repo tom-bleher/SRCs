@@ -77,19 +77,19 @@ double GenDensity(int nucl, double r){ // 1- carbon, 2- al, 3 - Fe56, 4 - Pb, 5 
 }
 
 // calculate transparency in z direction
-double getTransparency(int nucl, double x, double y, double z, double rmax, double sigmaNN){
-    // (x,y,z) = initial cell position
-    double transp= 0.0;
-    double dStep = 0.01;
-    double rPrime;
-    do { // integral rho sigma dz
-        rPrime=std::sqrt(x*x+y*y+z*z);
-        double dens = GenDensity(nucl, rPrime);
-        transp = transp + (sigmaNN*dens*dStep);
-        z = z + dStep;
-    } while (rPrime<rmax);
-    transp = exp(-transp);
-    return transp;
+double getTransparency(int nucl, double x, double y, double z_start, double rmax, double sigmaNN){
+    double integral = 0.0;
+    const double dStep = 0.01;
+    double z = z_start;
+    const double rmax_sq = rmax * rmax;
+    const double x_sq_plus_y_sq = x*x + y*y;
+
+    while (x_sq_plus_y_sq + z*z < rmax_sq) {
+        double rPrime = std::sqrt(x_sq_plus_y_sq + z*z);
+        integral += GenDensity(nucl, rPrime) * dStep;
+        z += dStep;
+    }
+    return std::exp(-integral * sigmaNN);
 }
 
 double ClebshGordan(int l1, int l2){
@@ -98,14 +98,20 @@ double ClebshGordan(int l1, int l2){
 
 // Associated Laguerre polynomial L_n^alpha(x)
 double assoc_laguerre(int n, double alpha, double x) {
-    double sum = 0.0;
-    for (int k = 0; k <= n; ++k) {
-        double num = std::tgamma(n + alpha + 1);
-        double den = std::tgamma(n - k + 1) * std::tgamma(alpha + k + 1);
-        double binom = num / den;
-        sum += std::pow(-x, k) * binom / std::tgamma(k + 1);
+    if (n < 0) return 0.0;
+    if (n == 0) return 1.0;
+    if (n == 1) return 1.0 + alpha - x;
+
+    double L0 = 1.0;
+    double L1 = 1.0 + alpha - x;
+    double Ln = 0.0;
+
+    for (int i = 2; i <= n; ++i) {
+        Ln = ((2.0 * (i - 1.0) + 1.0 + alpha - x) * L1 - ((i - 1.0) + alpha) * L0) / i;
+        L0 = L1;
+        L1 = Ln;
     }
-    return sum;
+    return Ln;
 }
 
 // Normalization constant N_{n_r l}
