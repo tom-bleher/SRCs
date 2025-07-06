@@ -423,6 +423,8 @@ PROGRAM src_main
     INTEGER(KIND=INT32) :: nuclType, Z, N
     REAL(KIND=REAL64) :: Rsrc, pairProb, A
     CHARACTER(LEN=10) :: arg1, arg2, arg3
+    CHARACTER(LEN=255) :: output_filename
+    INTEGER, PARAMETER :: output_unit = 20
     REAL(KIND=REAL64) :: r_max, spacing, sigmaNN, Rsrc_squared
     REAL(KIND=REAL64) :: b_p, b_n, cellVol
     INTEGER(KIND=INT32) :: n_steps_1d, i, j, k, l_loop, tid
@@ -465,6 +467,9 @@ PROGRAM src_main
     READ(arg2, *) Rsrc
     READ(arg3, *) pairProb
     
+    output_filename = TRIM(arg1) // '_' // TRIM(arg2) // '_' // TRIM(arg3) // '.txt'
+    OPEN(UNIT=output_unit, FILE=output_filename, STATUS='REPLACE', ACTION='WRITE')
+    
     ! ---- Initialization ----
     t_start = omp_get_wtime()
 
@@ -489,7 +494,7 @@ PROGRAM src_main
         N_nucleons = A * total_volume / (spacing**3)
         N_pairs = N_nucleons * (N_nucleons - 1.0_REAL64) / 2.0_REAL64
         prob_threshold = SQRT(accuracy / N_pairs)
-        WRITE(*,*) "Probability threshold: ", prob_threshold
+        WRITE(output_unit,*) "Probability threshold: ", prob_threshold
     END BLOCK
     
     ! ---- Grid and Center Pre-computation ----
@@ -520,7 +525,7 @@ PROGRAM src_main
     END DO
     !$OMP END PARALLEL DO
     
-    WRITE(*,*) "Creating nucleon probability distribution..."
+    WRITE(output_unit,*) "Creating nucleon probability distribution..."
     
     ! ---- Nucleon Creation ----
     cellVol = spacing**3
@@ -580,7 +585,7 @@ PROGRAM src_main
         nucleons = temp_nucleons(1:current_nucleon_count)
     END BLOCK
     
-    WRITE(*,*) "Created ", SIZE(nucleons), " nucleon-position combinations"
+    WRITE(output_unit,*) "Created ", SIZE(nucleons), " nucleon-position combinations"
 
     ! ---- Spatial Partitioning Setup ----
     BLOCK
@@ -610,7 +615,7 @@ PROGRAM src_main
         END DO
     END BLOCK
 
-    WRITE(*,*) "Computing pair probabilities..."
+    WRITE(output_unit,*) "Computing pair probabilities..."
 
     ! ---- Main Computation Loop ----
     P_np_tot = 0.0_REAL64
@@ -622,7 +627,7 @@ PROGRAM src_main
     
     !$OMP SINGLE
         num_threads = omp_get_num_threads()
-        WRITE(*,*) "Running with ", num_threads, " threads."
+        WRITE(output_unit,*) "Running with ", num_threads, " threads."
         ALLOCATE(thread_np(n_r_max, l_max, n_r_max, l_max, num_threads))
         ALLOCATE(thread_pp(n_r_max, l_max, n_r_max, l_max, num_threads))
         ALLOCATE(thread_nn(n_r_max, l_max, n_r_max, l_max, num_threads))
@@ -725,25 +730,27 @@ PROGRAM src_main
         
         src_fraction = (P_np_tot + P_pp_tot + P_nn_tot) / A
 
-        WRITE(*,'(A)') ""
-        WRITE(*,'(A)') "Total close-proximity probabilities (small spheres):"
-        WRITE(*,'(A, G0)') "  #np: ", P_np_tot
-        WRITE(*,'(A, G0)') "  #pp: ", P_pp_tot
-        WRITE(*,'(A, G0)') "  #nn: ", P_nn_tot
-        WRITE(*,'(A, G0)') "  R(e,e''p): ", Reep_tot
-        WRITE(*,'(A, G0)') "rmax: ", r_max
-        WRITE(*,'(A, G0)') "SRC fraction = ", src_fraction
+        WRITE(output_unit,'(A)') ""
+        WRITE(output_unit,'(A)') "Total close-proximity probabilities (small spheres):"
+        WRITE(output_unit,'(A, G0)') "  #np: ", P_np_tot
+        WRITE(output_unit,'(A, G0)') "  #pp: ", P_pp_tot
+        WRITE(output_unit,'(A, G0)') "  #nn: ", P_nn_tot
+        WRITE(output_unit,'(A, G0)') "  R(e,e''p): ", Reep_tot
+        WRITE(output_unit,'(A, G0)') "rmax: ", r_max
+        WRITE(output_unit,'(A, G0)') "SRC fraction = ", src_fraction
         IF (P_np_tot > 0) THEN
-            WRITE(*,'(A, G0, A, G0)') "pp/np = ", P_pp_tot/P_np_tot, "  nn/np = ", P_nn_tot/P_np_tot
+            WRITE(output_unit,'(A, G0, A, G0)') "pp/np = ", P_pp_tot/P_np_tot, "  nn/np = ", P_nn_tot/P_np_tot
         ELSE
-            WRITE(*,'(A)') "pp/np and nn/np are undefined because P_np is zero."
+            WRITE(output_unit,'(A)') "pp/np and nn/np are undefined because P_np is zero."
         END IF
-        WRITE(*,'(A, G0, A, G0)') "Pp = ", Pp_tot_calc, " Pn = ", Pn_tot_calc
-        WRITE(*,'(A, G0)') "spacing: ", spacing
-        WRITE(*,'(A, G0)') "Rsrc = ", Rsrc
-        WRITE(*,'(A, G0)') "pairProb = ", pairProb
-        WRITE(*,'(A, F8.3, A)') "Total execution time: ", t_end - t_start, " seconds."
+        WRITE(output_unit,'(A, G0, A, G0)') "Pp = ", Pp_tot_calc, " Pn = ", Pn_tot_calc
+        WRITE(output_unit,'(A, G0)') "spacing: ", spacing
+        WRITE(output_unit,'(A, G0)') "Rsrc = ", Rsrc
+        WRITE(output_unit,'(A, G0)') "pairProb = ", pairProb
+        WRITE(output_unit,'(A, F8.3, A)') "Total execution time: ", t_end - t_start, " seconds."
     END BLOCK
+
+    CLOSE(output_unit)
 
 CONTAINS
     SUBROUTINE process_pair(n1_idx, n2_idx, tid, P_np, P_pp, P_nn, Reep)
