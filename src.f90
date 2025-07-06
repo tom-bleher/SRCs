@@ -767,7 +767,8 @@ CONTAINS
         USE PhysicalConstants
         USE Procedures
         IMPLICIT NONE
-        INTEGER(KIND=INT32), INTENT(IN) :: n1_idx, n2_idx, tid
+        INTEGER(KIND=INT64), INTENT(IN) :: n1_idx, n2_idx
+        INTEGER(KIND=INT32), INTENT(IN) :: tid
         REAL(KIND=REAL64), INTENT(INOUT) :: P_np, P_pp, P_nn, Reep
         
         INTEGER(KIND=INT32) :: n1_type, n2_type, n1_shell_idx, n2_shell_idx
