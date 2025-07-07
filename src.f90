@@ -460,6 +460,7 @@ PROGRAM src_main
     INTEGER(KIND=INT32) :: ix1, iy1, iz1, ix2, iy2, iz2
     INTEGER(KIND=INT64) :: c1_idx, c2_idx, start1, end1, start2, end2
     INTEGER(KIND=INT64) :: loop_i, loop_j, n1_flat_idx, n2_flat_idx
+    INTEGER(KIND=INT32) :: n1_nucleon_idx, n2_nucleon_idx, c1_idx_n, c2_idx_n
     REAL(KIND=REAL64) :: dx, dy, dz, dist_squared
     REAL(KIND=REAL64) :: P_np_tot, P_pp_tot, P_nn_tot, Reep_tot
     
@@ -649,7 +650,7 @@ PROGRAM src_main
 
     !$OMP DO SCHEDULE(DYNAMIC, 1) COLLAPSE(3) &
     !$OMP PRIVATE(ix1,iy1,iz1,ix2,iy2,iz2,tid,c1_idx,c2_idx,start1,end1,start2,end2) &
-    !$OMP PRIVATE(loop_i,loop_j,n1_flat_idx,n2_flat_idx,dx,dy,dz,dist_squared) &
+    !$OMP PRIVATE(loop_i,loop_j,n1_flat_idx,n2_flat_idx,dx,dy,dz,dist_squared,n1_nucleon_idx,n2_nucleon_idx) &
     !$OMP REDUCTION(+:P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
     DO i = 1, n_steps_1d
         DO j = 1, n_steps_1d
@@ -662,11 +663,12 @@ PROGRAM src_main
                 end1 = cell_offsets(c1_idx + 1)
                 IF (start1 > end1) CYCLE
                 
-                ! Pairs within the same cell
+                ! Pairs within the same cell - distance between centers is 0, so always process.
                 DO loop_i = start1, end1
                     DO loop_j = loop_i + 1, end1
-                        CALL process_pair(flat_nucleons_in_cell(loop_i), &
-                                        flat_nucleons_in_cell(loop_j), tid, &
+                        n1_nucleon_idx = flat_nucleons_in_cell(loop_i)
+                        n2_nucleon_idx = flat_nucleons_in_cell(loop_j)
+                        CALL process_pair(n1_nucleon_idx, n2_nucleon_idx, tid, &
                                         P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
                     END DO
                 END DO
@@ -686,6 +688,7 @@ PROGRAM src_main
                             end2 = cell_offsets(c2_idx + 1)
                             IF (start2 > end2) CYCLE
 
+                            ! Check distance between cell centers (matching C++ implementation)
                             dx = centers(1, c1_idx) - centers(1, c2_idx)
                             dy = centers(2, c1_idx) - centers(2, c2_idx)
                             dz = centers(3, c1_idx) - centers(3, c2_idx)
@@ -693,11 +696,13 @@ PROGRAM src_main
                             
                             IF (dist_squared >= Rsrc_squared) CYCLE
                             
+                            ! Process all nucleon pairs between these cells
                             DO n1_flat_idx = start1, end1
                                 DO n2_flat_idx = start2, end2
-                                    CALL process_pair(flat_nucleons_in_cell(n1_flat_idx), &
-                                                    flat_nucleons_in_cell(n2_flat_idx), tid, &
-                                                    P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
+                                    n1_nucleon_idx = flat_nucleons_in_cell(n1_flat_idx)
+                                    n2_nucleon_idx = flat_nucleons_in_cell(n2_flat_idx)
+                                    CALL process_pair(n1_nucleon_idx, n2_nucleon_idx, tid, &
+                                                     P_np_tot, P_pp_tot, P_nn_tot, Reep_tot)
                                 END DO
                             END DO
                         END DO
@@ -781,6 +786,7 @@ CONTAINS
         n1 = nucleons(n1_idx)
         n2 = nucleons(n2_idx)
 
+        ! The distance check is now done in the main loop before calling this subroutine.
         IF (n1%type == n2%type .AND. n1%shell_index == n2%shell_index) RETURN
         
         pair_prob = n1%probability * n2%probability
