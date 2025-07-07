@@ -362,7 +362,23 @@ MODULE Procedures
                     ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
                     ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
                     ShellState(2,1), ShellState(2,1), ShellState(2,1), ShellState(2,1), &
-                    ShellState(2,2), ShellState(2,2), ShellState(2,2) &
+                    ShellState(2,2), ShellState(2,2), ShellState(2,2), ShellState(2,2), &
+                    ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                    ShellState(3,0), ShellState(3,0), ShellState(2,2), ShellState(2,2), &
+                    ShellState(2,2), ShellState(2,2), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(1,4), ShellState(1,4), ShellState(1,4), ShellState(1,4), &
+                    ShellState(2,3), ShellState(2,3), ShellState(2,3), ShellState(2,3), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
+                    ShellState(0,6), ShellState(0,6), &
+                    ShellState(2,4), ShellState(2,4), ShellState(2,4), ShellState(2,4), &
+                    ShellState(2,4), ShellState(2,4), ShellState(2,4), ShellState(2,4), &
+                    ShellState(2,4), ShellState(2,4) &
                 ]
                 neutrons = [ &
                     ShellState(0,0), ShellState(0,0), ShellState(0,1), ShellState(0,1), &
@@ -398,7 +414,10 @@ MODULE Procedures
                     ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
                     ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
                     ShellState(0,6), ShellState(0,6), ShellState(0,6), ShellState(0,6), &
-                    ShellState(0,6), ShellState(0,6) &
+                    ShellState(0,6), ShellState(0,6), &
+                    ShellState(2,4), ShellState(2,4), ShellState(2,4), ShellState(2,4), &
+                    ShellState(2,4), ShellState(2,4), ShellState(2,4), ShellState(2,4), &
+                    ShellState(2,4), ShellState(2,4) &
                 ]
             CASE DEFAULT
                 WRITE(*,*) "Unknown nucleus type:", nuclType
